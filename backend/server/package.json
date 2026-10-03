@@ -1,0 +1,15 @@
+{
+  "name": "tech-nova-server",
+  "version": "1.0.0",
+  "description": "Express backend for TechNova — kept for local `npm run dev:server`. All real deps are listed in the root package.json so Vercel installs them in one place.",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "seed": "node src/utils/seed.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
