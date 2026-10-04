@@ -2,13 +2,47 @@
 
 A production-grade MERN-stack web application that lets an admin log in, scan the latest tech trends per category, generate humanized platform-specific content (Facebook, Instagram, LinkedIn, Pinterest, Threads, Twitter/X, Reddit, Blog), generate AI images, and generate code from prompts — all powered by Google Gemini.
 
-Built for **Vercel deployment**. The project root IS the React frontend; the Express backend lives in `server/`.
+Built for deployment on Vercel (Frontend) and Render (Backend).
 
-## Stack
-- **Frontend**: React 18 + Vite + TypeScript + Tailwind CSS + shadcn/ui + Zustand + React Router (lives at the project root)
-- **Backend**: Node.js + Express + MongoDB Atlas (Mongoose) + JWT auth + bcrypt password hashing (lives in `server/`)
-- **AI**: Google Gemini REST API (`gemini-3.5-flash` text, `gemini-3.1-flash-image` images)
-- **Deployment**: Vercel — React static build + Express serverless function via `api/[[...slug]].js`
+## The Problem
+Staying updated with rapidly changing tech trends and creating engaging, platform-specific content is incredibly time-consuming. Tech influencers, digital agencies, and developers often struggle to maintain an active presence across multiple platforms (Twitter, LinkedIn, Instagram, etc.) while also needing to generate code snippets or visual assets for their blogs and posts. Managing multiple disconnected AI tools for these tasks breaks workflow and reduces productivity.
+
+## The Solution We Provided
+TechNova provides an all-in-one AI-powered centralized dashboard that solves this fragmentation. We built a system that:
+1. **Automates Tech Trend Discovery**: Scans and summarizes the latest tech news across various categories (AI, Web3, Cybersecurity, etc.) in real-time using Gemini.
+2. **Generates Platform-Specific Content**: Takes a single prompt or news topic and automatically tailors the tone, length, and format for 8+ different social platforms (e.g., professional for LinkedIn, short and hashtag-heavy for Twitter/X).
+3. **Creates Visual Assets**: Includes a prompt-to-image generator for creating custom thumbnails and post graphics.
+4. **Writes Code**: Features a dedicated coding assistant to generate syntax-highlighted code snippets for technical blogs.
+5. **Maintains Historical Records**: Everything generated is saved to a database, allowing admins to track past campaigns and reuse content.
+
+By centralizing these capabilities into one secure platform, we drastically reduce the time and effort required to run a tech-focused digital presence.
+
+## Detailed Technology Stack
+We engineered a robust, production-ready MERN stack application optimized for cloud deployment:
+
+**Frontend (Client)**
+- **React 18 & Vite**: For lightning-fast Hot Module Replacement (HMR) during development and optimized static builds.
+- **TypeScript**: Ensures type safety and reduces runtime errors across the UI.
+- **Tailwind CSS & shadcn/ui**: Used to build a highly responsive, premium, dark-mode focused UI with modern glassmorphism effects.
+- **Framer Motion & CSS Animations**: Powers 15+ custom premium animations (e.g., Staggered Menus, Magic Bentos, Hover Cards) for a dynamic user experience.
+- **Zustand**: Provides lightweight, scalable global state management without the boilerplate of Redux.
+- **React Router DOM**: Handles secure routing and protected layout boundaries.
+
+**Backend (API Server)**
+- **Node.js & Express**: A lightweight, scalable backend framework handling REST API requests.
+- **MongoDB Atlas & Mongoose**: A cloud-hosted NoSQL database for flexible document storage, complete with connection caching.
+- **JSON Web Tokens (JWT) & bcrypt**: Manages stateless authentication and securely hashes passwords.
+- **Security Middleware**: Incorporates `helmet` (HTTP headers), `cors`, `express-rate-limit` (brute-force & API quota protection), and NoSQL injection sanitizers.
+
+**Artificial Intelligence**
+- **Google Gemini REST API**: 
+  - `gemini-3.5-flash`: Powers fast, high-quality text generation for news scanning, social media content, and code generation.
+  - `gemini-3.1-flash-image`: Powers the text-to-image generation engine.
+
+**Deployment & DevOps**
+- **Vercel**: Hosts the React frontend on its global Edge Network for maximum static asset delivery speed.
+- **Render**: Hosts the Node.js/Express backend as a persistent web service to handle heavy AI proxying and database connections without serverless cold-start timeouts.
+- **GitHub**: Source control and continuous deployment triggers.
 
 ## Project structure
 ```
