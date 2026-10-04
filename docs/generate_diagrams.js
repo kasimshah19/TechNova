@@ -3,298 +3,130 @@ const path = require('path');
 
 const diagrams = [
   {
-    name: "01_system_architecture.md",
-    content: `# TechNova System Architecture
+    name: "11_frontend_routing.md",
+    content: `# Frontend Routing Architecture
 
-This diagram illustrates the high-level architecture of the TechNova platform, showing how the frontend, backend, database, and external APIs interact.
+How React Router manages navigation and protected routes.
 
 \`\`\`mermaid
 graph TD
-    Client[Web Browser Client] -->|HTTPS| Frontend[Vercel Frontend - React/Vite]
-    Frontend -->|REST API| Backend[Render Backend - Node/Express]
-    Backend -->|Mongoose/TCP| DB[(MongoDB Atlas)]
-    Backend -->|REST API| Gemini[Google Gemini API]
+    Router[BrowserRouter] --> Routes
     
-    classDef frontend fill:#3b82f6,stroke:#1d4ed8,stroke-width:2px,color:#fff;
-    classDef backend fill:#10b981,stroke:#047857,stroke-width:2px,color:#fff;
-    classDef db fill:#f59e0b,stroke:#b45309,stroke-width:2px,color:#fff;
-    classDef external fill:#8b5cf6,stroke:#5b21b6,stroke-width:2px,color:#fff;
+    Routes --> PublicRoutes[Public Routes]
+    Routes --> ProtectedRoutes[Protected Routes - AuthGuard]
     
-    class Frontend frontend;
-    class Backend backend;
-    class DB db;
-    class Gemini external;
+    PublicRoutes --> Login[/login]
+    PublicRoutes --> CatchAll[/* -> Redirect to /login]
+    
+    ProtectedRoutes --> DashboardLayout
+    
+    DashboardLayout --> Home[/]
+    DashboardLayout --> Scan[/scan]
+    DashboardLayout --> Content[/content]
+    DashboardLayout --> Image[/image]
+    DashboardLayout --> Code[/code]
+    DashboardLayout --> History[/history]
 \`\`\`
 `
   },
   {
-    name: "02_database_schema.md",
-    content: `# Database Schema (ERD)
+    name: "12_error_handling_flow.md",
+    content: `# Global Error Handling Flow
 
-This diagram shows the MongoDB document collections and their relationships.
-
-\`\`\`mermaid
-erDiagram
-    USER ||--o{ SCAN : "performs"
-    USER ||--o{ CONTENT : "generates"
-    USER ||--o{ IMAGE : "generates"
-    USER ||--o{ CODE : "generates"
-
-    USER {
-        ObjectId _id
-        string username
-        string password_hash
-        string role
-        date createdAt
-    }
-    
-    SCAN {
-        ObjectId _id
-        ObjectId user_id
-        string category
-        string result_json
-        date scannedAt
-    }
-    
-    CONTENT {
-        ObjectId _id
-        ObjectId user_id
-        string platform
-        string original_prompt
-        string generated_text
-        date createdAt
-    }
-    
-    IMAGE {
-        ObjectId _id
-        ObjectId user_id
-        string prompt
-        string image_url
-        date generatedAt
-    }
-\`\`\`
-`
-  },
-  {
-    name: "03_authentication_flow.md",
-    content: `# Authentication Flow
-
-Detailed flow of how JWT authentication is handled between the client and server.
+How errors are caught and processed across the stack.
 
 \`\`\`mermaid
 sequenceDiagram
     participant User
-    participant Client as React Frontend
-    participant API as Express Backend
-    participant DB as MongoDB Atlas
-
-    User->>Client: Enters credentials
-    Client->>API: POST /api/auth/login (username, password)
-    API->>DB: Query User by username
-    DB-->>API: Return User document (with hash)
-    API->>API: bcrypt.compare(password, hash)
-    alt Invalid Credentials
-        API-->>Client: 401 Unauthorized
-        Client-->>User: Show Error
-    else Valid Credentials
-        API->>API: Sign JWT with SECRET
-        API-->>Client: 200 OK + { token, user }
-        Client->>Client: Store token in Zustand / localStorage
-        Client-->>User: Redirect to Dashboard
+    participant Frontend
+    participant Route Controller
+    participant Error Middleware
+    
+    User->>Frontend: Perform Action
+    Frontend->>Route Controller: API Request
+    
+    alt Success
+        Route Controller-->>Frontend: 200/201 Success Response
+    else Expected Error (e.g. Validation)
+        Route Controller->>Error Middleware: next(Error)
+        Error Middleware-->>Frontend: 400 Bad Request
+    else Unexpected Server Error
+        Route Controller->>Error Middleware: Throw Exception
+        Error Middleware-->>Frontend: 500 Internal Server Error
     end
+    
+    Frontend->>Frontend: Catch block (Axios)
+    Frontend-->>User: Show Toast Notification / Error Message
 \`\`\`
 `
   },
   {
-    name: "04_content_generation_flow.md",
-    content: `# AI Content Generation Flow
+    name: "13_database_connection_lifecycle.md",
+    content: `# Database Connection Lifecycle
 
-Process of generating platform-specific content using Gemini API.
+Mongoose connection management, especially for Serverless environments.
+
+\`\`\`mermaid
+stateDiagram-v2
+    [*] --> Disconnected
+    
+    Disconnected --> Connecting : Server Starts / DB Request
+    Connecting --> Connected : Authentication Success
+    Connecting --> Error : Invalid URI / IP Blocked
+    
+    Connected --> Disconnected : Connection Lost
+    Connected --> Connected : Cached Connection (Serverless reuse)
+    
+    Error --> [*] : Exit Process / Retry
+\`\`\`
+`
+  },
+  {
+    name: "14_rate_limiting_architecture.md",
+    content: `# Rate Limiting Architecture
+
+Protection against abuse and excessive API calls.
+
+\`\`\`mermaid
+graph TD
+    IncomingRequest[Incoming Request] --> RouteCheck{Check Route}
+    
+    RouteCheck -->|/api/auth/*| AuthLimiter[Auth Limiter]
+    RouteCheck -->|/api/gemini/*| AILimiter[AI Limiter]
+    RouteCheck -->|/api/health| NoLimit[No Limiter]
+    
+    AuthLimiter -->|10 req / 15 min| AllowAuth{Limit Exceeded?}
+    AILimiter -->|8 req / 60 sec| AllowAI{Limit Exceeded?}
+    
+    AllowAuth -->|Yes| Block1[429 Too Many Requests]
+    AllowAuth -->|No| ProcessAuth[Process Login]
+    
+    AllowAI -->|Yes| Block2[429 Too Many Requests]
+    AllowAI -->|No| ProcessAI[Process AI Generation]
+\`\`\`
+`
+  },
+  {
+    name: "15_code_generation_flow.md",
+    content: `# Code Generation Flow
+
+Process of taking user prompts and returning syntax-highlighted code.
 
 \`\`\`mermaid
 sequenceDiagram
-    participant Client
+    participant Developer
+    participant UI (CodePanel)
     participant Backend
     participant Gemini API
-    participant DB
-
-    Client->>Backend: POST /api/gemini/content (topic, platform, tone)
-    Backend->>Backend: Validate Request & Auth Token
-    Backend->>Gemini API: Send Prompt to gemini-3.5-flash
-    Gemini API-->>Backend: Return Generated Markdown/Text
-    Backend->>DB: Save generated content history
-    DB-->>Backend: Acknowledge Save
-    Backend-->>Client: 200 OK (Generated Content)
-\`\`\`
-`
-  },
-  {
-    name: "05_deployment_architecture.md",
-    content: `# Deployment Architecture
-
-Infrastructure setup for TechNova across multiple cloud providers.
-
-\`\`\`mermaid
-flowchart LR
-    User((User)) -->|DNS/CDN| Vercel(Vercel Edge Network)
     
-    subgraph Frontend Hosting [Vercel]
-        ReactApp[React SPA Static Files]
-    end
-    
-    Vercel --> ReactApp
-    
-    ReactApp -->|API Calls| Render(Render Cloud)
-    
-    subgraph Backend Hosting [Render Web Service]
-        NodeApp[Node.js Express Server]
-    end
-    
-    Render --> NodeApp
-    
-    NodeApp -->|Mongoose| MongoDB[(MongoDB Atlas Cluster)]
-    NodeApp -->|HTTPS| GoogleAI(Google Cloud / Gemini)
-\`\`\`
-`
-  },
-  {
-    name: "06_state_management.md",
-    content: `# Frontend State Management (Zustand)
-
-Overview of how the Zustand stores are organized on the client.
-
-\`\`\`mermaid
-classDiagram
-    class AuthStore {
-        +User user
-        +String token
-        +Boolean isAuthenticated
-        +login(token, user)
-        +logout()
-    }
-    
-    class AppStore {
-        +String currentCategory
-        +String currentPlatform
-        +Boolean isGenerating
-        +setCategory(category)
-        +setPlatform(platform)
-        +setGenerating(status)
-    }
-
-    class UIComponents {
-        +Sidebar
-        +Dashboard
-        +LoginScreen
-    }
-
-    UIComponents ..> AuthStore : reads/updates
-    UIComponents ..> AppStore : reads/updates
-\`\`\`
-`
-  },
-  {
-    name: "07_api_routing_structure.md",
-    content: `# Backend API Routing Structure
-
-How Express handles and routes incoming HTTP requests.
-
-\`\`\`mermaid
-graph TD
-    App[Express App entry point] --> Middleware[Global Middleware: CORS, Helmet, JSON Parser]
-    Middleware --> AuthRouter[/api/auth]
-    Middleware --> GeminiRouter[/api/gemini]
-    Middleware --> HistoryRouter[/api/history]
-    
-    AuthRouter --> Login[POST /login]
-    AuthRouter --> Register[POST /register]
-    
-    GeminiRouter --> AuthCheck[Auth Middleware]
-    AuthCheck --> Scan[POST /scan]
-    AuthCheck --> Content[POST /content]
-    AuthCheck --> Image[POST /image]
-    AuthCheck --> Code[POST /code]
-    
-    HistoryRouter --> AuthCheck2[Auth Middleware]
-    AuthCheck2 --> GetHistory[GET /]
-    AuthCheck2 --> DeleteHistory[DELETE /:id]
-    
-    Scan --> ErrorHandler[Global Error Handler]
-    Content --> ErrorHandler
-\`\`\`
-`
-  },
-  {
-    name: "08_image_generation_flow.md",
-    content: `# Image Generation Flow
-
-Using the Gemini Image Model for prompt-to-image capabilities.
-
-\`\`\`mermaid
-sequenceDiagram
-    participant UI
-    participant Backend
-    participant Gemini Image API
-    
-    UI->>Backend: POST /api/gemini/image (prompt, aspect_ratio)
-    Backend->>Backend: Rate Limit Check (apiLimiter)
-    Backend->>Gemini Image API: Request to gemini-3.1-flash-image
-    Gemini Image API-->>Backend: Base64 Image String / URL
-    Backend-->>UI: 200 OK (Image Data)
-    UI->>UI: Render Image Preview
-\`\`\`
-`
-  },
-  {
-    name: "09_component_hierarchy.md",
-    content: `# React Component Hierarchy
-
-Tree structure of the React Frontend application.
-
-\`\`\`mermaid
-graph TD
-    App[App.tsx] --> AuthGuard
-    AuthGuard --> LoginScreen
-    AuthGuard --> DashboardLayout
-    
-    DashboardLayout --> Sidebar
-    DashboardLayout --> TopNav
-    DashboardLayout --> MainContent
-    
-    MainContent --> ScanView
-    MainContent --> ContentGenerator
-    MainContent --> ImageGenerator
-    MainContent --> CodeGenerator
-    MainContent --> HistoryView
-    
-    ScanView --> TrendCard
-    ScanView --> ChartComponent
-    
-    ContentGenerator --> PlatformSelector
-    ContentGenerator --> EditorPanel
-\`\`\`
-`
-  },
-  {
-    name: "10_security_layers.md",
-    content: `# Security Layers
-
-Overview of backend security implementation.
-
-\`\`\`mermaid
-flowchart TD
-    Request([Incoming Request]) --> RateLimit{Rate Limiter}
-    RateLimit -- Exceeded --> 429[429 Too Many Requests]
-    RateLimit -- Passed --> Helmet[Helmet Headers]
-    Helmet --> CORS[CORS Check]
-    CORS -- Blocked --> 403[403 Forbidden]
-    CORS -- Allowed --> Auth{JWT Middleware}
-    
-    Auth -- Invalid/Missing --> 401[401 Unauthorized]
-    Auth -- Valid --> Sanitizer[NoSQL Sanitizer]
-    
-    Sanitizer --> Controller[Route Controller]
-    Controller --> DB[(Database)]
+    Developer->>UI (CodePanel): Enter prompt & Select Language
+    UI (CodePanel)->>Backend: POST /api/gemini/code (prompt, language)
+    Backend->>Gemini API: Construct prompt with specific language constraints
+    Gemini API-->>Backend: Return Markdown Code Block
+    Backend->>Backend: Parse Markdown & Save to DB
+    Backend-->>UI (CodePanel): Return Raw Code
+    UI (CodePanel)->>UI (CodePanel): Apply Syntax Highlighting (react-syntax-highlighter)
+    UI (CodePanel)-->>Developer: Display Formatted Code
 \`\`\`
 `
   }
