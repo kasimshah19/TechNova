@@ -98,7 +98,7 @@ export async function startServer() {
   });
 }
 
-const isMain = process.env.NODE_ENV !== 'production' && !process.env.VERCEL && process.argv[1] && process.argv[1].endsWith('index.js');
+const isMain = !process.env.VERCEL && process.argv[1] && process.argv[1].endsWith('index.js');
 if (isMain) {
   startServer().catch((err) => {
     console.error('[startup] fatal:', err);
