@@ -4,6 +4,15 @@ A production-grade MERN-stack web application that lets an admin log in, scan th
 
 Built for deployment on Vercel (Frontend) and Render (Backend).
 
+## 🚀 Live Demo & Credentials
+To test the live application, use the following credentials to access the admin dashboard:
+
+| Role | Application URL | Username | Password |
+| :--- | :--- | :--- | :--- |
+| **Admin** | [Live Vercel App](https://tech-nova-fawn-phi.vercel.app/) | `admin` | `Admin@2024` |
+
+---
+
 ## The Core Problem
 In the fast-paced world of digital media and software development, staying relevant requires constant vigilance and continuous content creation. Tech influencers, digital marketing agencies, startup founders, and developer advocates often face a significant bottleneck: context switching. 
 1. **Information Overload**: Tracking breaking news across AI, Web3, Cybersecurity, and Software Engineering requires manually checking dozens of sources daily.
