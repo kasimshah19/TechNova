@@ -20,7 +20,10 @@ export async function api<T = any>(path: string, init: RequestInit = {}): Promis
     ...(init.headers as Record<string, string>),
   };
 
-  const res = await fetch(path, { ...init, headers });
+  const baseUrl = import.meta.env.VITE_API_URL || '';
+  const fullUrl = baseUrl + path;
+
+  const res = await fetch(fullUrl, { ...init, headers });
   const text = await res.text();
   const data = text ? safeJson(text) : null;
 
