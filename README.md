@@ -150,3 +150,8 @@ Connect with me:
 - **Portfolio**: [kasim-portfolio-umber.vercel.app](https://kasim-portfolio-umber.vercel.app/)
 - **LinkedIn**: [Kasim Shah](https://www.linkedin.com/in/kasim-shah-176175340/)
 - **GitHub**: [@kasimshah19](https://github.com/kasimshah19)
+
+<br/>
+<div align="center">
+  &copy; 2026 TechNova — All rights reserved.
+</div>
