@@ -60,6 +60,7 @@ Rules:
     try {
       const r = await generateText({ prompt, temperature: 0.4, maxOutputTokens: 8192, responseMimeType: 'application/json' });
       text = r.text;
+      console.log('AI Response:', text);
     } catch (err) {
       if (err instanceof GeminiError) {
         return res.status(err.status || 502).json({ error: err.message });

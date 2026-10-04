@@ -10,7 +10,6 @@ import {
   Settings,
 } from 'lucide-react';
 import GlitchText from '../animation/GlitchText';
-import StaggeredMenu from '../animation/StaggeredMenu';
 
 export interface NavItem {
   label: string;
@@ -26,7 +25,7 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'Code Studio', to: '/code', icon: <Code2 className="h-4 w-4" />, desc: 'Generate code' },
 ];
 
-const STAGGER_ITEMS = NAV_ITEMS.map((n) => ({ label: n.label, link: n.to, ariaLabel: n.label }));
+export const STAGGER_ITEMS = NAV_ITEMS.map((n) => ({ label: n.label, link: n.to, ariaLabel: n.label }));
 
 export default function Sidebar() {
   const location = useLocation();
@@ -93,26 +92,6 @@ export default function Sidebar() {
           </ul>
         </nav>
       </aside>
-
-      <div className="lg:hidden">
-        <StaggeredMenu
-          position="left"
-          colors={['#0a0a0b', '#18181b', '#27272a']}
-          accentColor="#f59e0b"
-          menuButtonColor="#fafafa"
-          openMenuButtonColor="#f59e0b"
-          isFixed
-          closeOnClickAway
-          onMenuClose={() => {}}
-          items={STAGGER_ITEMS}
-          socialItems={[]}
-          displaySocials={false}
-          displayItemNumbering
-          logoUrl="/logo.svg"
-          className=""
-          onMenuOpen={() => {}}
-        />
-      </div>
     </>
   );
 }

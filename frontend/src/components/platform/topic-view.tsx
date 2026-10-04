@@ -197,6 +197,7 @@ export default function TopicView() {
               pillTextColor="#a1a1aa"
               ease="power3.easeOut"
               onSelect={handlePlatformSelect}
+              onMobileMenuClick={() => {}}
               initialLoadAnimation={false}
             />
           </div>
@@ -205,20 +206,20 @@ export default function TopicView() {
 
       <Card className="glass-card overflow-hidden rounded-2xl">
         <CardHeader className="pb-2">
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div>
               <CardTitle className="flex items-center gap-2 text-base">
-                <span className="grid h-6 w-6 place-items-center rounded-lg bg-amber-500/15 text-amber-300 text-xs font-bold">
+                <span className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-amber-500/15 text-amber-300 text-xs font-bold">
                   {platform.charAt(0)}
                 </span>
-                Generated content for {platform}
+                <span className="truncate">Generated content for {platform}</span>
               </CardTitle>
             </div>
             <Button
               onClick={() => doGenerate(platform)}
               disabled={loading}
               variant="outline"
-              className="h-9 rounded-lg border-white/15 bg-white/5 text-zinc-200 hover:bg-white/10"
+              className="w-full sm:w-auto h-9 rounded-lg border-white/15 bg-white/5 text-zinc-200 hover:bg-white/10 shrink-0"
             >
               <RefreshCw className={`mr-2 h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
               Regenerate
@@ -252,7 +253,7 @@ export default function TopicView() {
 function PostingTimeCard({ result, platform }: { result: PostingTimeResult; platform: Platform }) {
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-3">
         <div className="rounded-xl border border-white/10 bg-zinc-900/50 p-3">
           <div className="text-[10px] uppercase tracking-widest text-zinc-500">Best time</div>
           <div className="mt-1 font-mono text-xl font-bold text-amber-300">{result.bestTime}</div>

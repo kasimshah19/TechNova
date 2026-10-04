@@ -91,17 +91,17 @@ export default function DashboardView() {
               TechNova scans the tech world, finds what's trending right now, and turns each topic into humanized,
               platform-specific content your audience actually wants to read.
             </p>
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3 w-full">
               <Button
                 onClick={() => handleScan(CATEGORIES[0].name)}
-                className="h-11 rounded-xl premium-grad text-zinc-950 font-semibold hover:opacity-90"
+                className="h-11 rounded-xl premium-grad text-zinc-950 font-semibold hover:opacity-90 w-full sm:w-auto"
               >
                 Scan AI Trends <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
               <Button
                 variant="outline"
                 onClick={() => (window.location.hash = '#history')}
-                className="h-11 rounded-xl border-white/15 bg-white/5 text-zinc-200 hover:bg-white/10"
+                className="h-11 rounded-xl border-white/15 bg-white/5 text-zinc-200 hover:bg-white/10 w-full sm:w-auto"
               >
                 <TrendingUp className="mr-2 h-4 w-4" /> View history
               </Button>

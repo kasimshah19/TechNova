@@ -51,8 +51,12 @@ export default function ImagePanel() {
       setHistory((h) => [{ id: `img-${Date.now()}`, prompt: prompt.trim(), image: r.image!, alt: r.alt! }, ...h].slice(0, 6));
       toast.success('Image generated.');
     } else {
-      setError(r.error || 'Image generation failed.');
-      toast.error(r.error || 'Image generation failed.');
+      let errorMsg = r.error || 'Image generation failed.';
+      if (errorMsg.includes('429') || errorMsg.includes('RESOURCE_EXHAUSTED')) {
+        errorMsg = "API Quota Exceeded (429): Google's free tier limits image generation to 0 requests. You MUST set up a billing account in Google AI Studio to use the Image API.";
+      }
+      setError(errorMsg);
+      toast.error(errorMsg);
     }
   };
 

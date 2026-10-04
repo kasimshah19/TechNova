@@ -101,11 +101,11 @@ export default function ScanView() {
             {loading ? 'Analyzing the latest trends...' : `${filtered.length} trend${filtered.length === 1 ? '' : 's'} found.`}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto mt-2 sm:mt-0">
           <Button
             onClick={() => doScan(category)}
             disabled={loading}
-            className="h-10 rounded-xl premium-grad text-zinc-950 font-semibold hover:opacity-90"
+            className="h-10 w-full rounded-xl premium-grad text-zinc-950 font-semibold hover:opacity-90"
           >
             {loading ? <RefreshCw className="mr-2 h-4 w-4 animate-spin" /> : <Radar className="mr-2 h-4 w-4" />}
             {loading ? 'Scanning...' : 'Rescan'}

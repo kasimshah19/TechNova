@@ -27,7 +27,7 @@ export default function HistoryView() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="bg-zinc-900/60">
+        <TabsList className="bg-zinc-900/60 flex-wrap h-auto justify-start gap-1 p-1">
           <TabsTrigger value="scans">Scans ({scans.length})</TabsTrigger>
           <TabsTrigger value="contents">Content ({contents.length})</TabsTrigger>
           <TabsTrigger value="images">Images ({images.length})</TabsTrigger>

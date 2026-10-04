@@ -91,16 +91,32 @@ export function safeJsonParse(text, fallback = null) {
   if (cleaned.startsWith('```')) {
     cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/i, '');
   }
-  const first = cleaned.indexOf('{');
-  const last = cleaned.lastIndexOf('}');
-  if (first !== -1 && last !== -1 && last > first) {
-    cleaned = cleaned.slice(first, last + 1);
-  } else {
-    const firstArr = cleaned.indexOf('[');
-    const lastArr = cleaned.lastIndexOf(']');
-    if (firstArr !== -1 && lastArr !== -1 && lastArr > firstArr) {
+  const firstObj = cleaned.indexOf('{');
+  const lastObj = cleaned.lastIndexOf('}');
+  const firstArr = cleaned.indexOf('[');
+  const lastArr = cleaned.lastIndexOf(']');
+
+  const hasObj = firstObj !== -1 && lastObj !== -1 && lastObj > firstObj;
+  const hasArr = firstArr !== -1 && lastArr !== -1 && lastArr > firstArr;
+
+  if (hasObj && hasArr) {
+    // If it has both, pick the one that encapsulates the other
+    if (firstObj < firstArr && lastObj > lastArr) {
+      cleaned = cleaned.slice(firstObj, lastObj + 1);
+    } else if (firstArr < firstObj && lastArr > lastObj) {
       cleaned = cleaned.slice(firstArr, lastArr + 1);
+    } else {
+      // Fallback to whichever starts first
+      if (firstObj < firstArr) {
+        cleaned = cleaned.slice(firstObj, lastObj + 1);
+      } else {
+        cleaned = cleaned.slice(firstArr, lastArr + 1);
+      }
     }
+  } else if (hasObj) {
+    cleaned = cleaned.slice(firstObj, lastObj + 1);
+  } else if (hasArr) {
+    cleaned = cleaned.slice(firstArr, lastArr + 1);
   }
   try {
     return JSON.parse(cleaned);

@@ -1,7 +1,8 @@
 import { Routes, Route, useLocation, Link } from 'react-router-dom';
 import { useAppStore } from '../../store/app';
-import Sidebar from './sidebar';
+import Sidebar, { STAGGER_ITEMS } from './sidebar';
 import DashboardView from './dashboard-view';
+import StaggeredMenu from '../animation/StaggeredMenu';
 import ScanView from './scan-view';
 import TopicView from './topic-view';
 import ImageStudioView from './image-studio-view';
@@ -43,14 +44,33 @@ export default function AppShell() {
       <Sidebar />
 
       <div className="flex min-h-screen flex-1 flex-col min-w-0">
-        <header className="hidden lg:flex h-16 items-center justify-between gap-4 border-b border-white/10 bg-zinc-950/60 backdrop-blur-xl px-6 sticky top-0 z-20">
-          <div className="flex items-center gap-2 text-sm">
+        <header className="flex h-16 items-center justify-between gap-2 sm:gap-4 border-b border-white/10 bg-zinc-950/60 backdrop-blur-xl px-4 sm:px-6 sticky top-0 z-20">
+          <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm pl-16 lg:pl-0">
+            <div className="lg:hidden">
+              <StaggeredMenu
+                position="left"
+                colors={['#0a0a0b', '#18181b', '#27272a']}
+                accentColor="#f59e0b"
+                menuButtonColor="#fafafa"
+                openMenuButtonColor="#f59e0b"
+                isFixed
+                closeOnClickAway
+                onMenuClose={() => {}}
+                items={STAGGER_ITEMS}
+                socialItems={[]}
+                displaySocials={false}
+                displayItemNumbering
+                logoUrl=""
+                className=""
+                onMenuOpen={() => {}}
+              />
+            </div>
             <Link to="/" className="text-zinc-400 hover:text-amber-300">Home</Link>
-            <ChevronRight className="h-3.5 w-3.5 text-zinc-600" />
-            <span className="text-zinc-200">{crumb}</span>
+            <ChevronRight className="h-3.5 w-3.5 text-zinc-600 shrink-0" />
+            <span className="text-zinc-200 truncate max-w-[120px] sm:max-w-none">{crumb}</span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <Button
               onClick={async () => {
                 const r = await runScan('AI Related');
