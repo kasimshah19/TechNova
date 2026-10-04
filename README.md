@@ -140,3 +140,13 @@ If these models are unavailable on your Gemini API account, the API returns a cl
 - **Platforms**: edit `PLATFORMS` in `src/store/app.ts` and `server/src/routes/content.js`
 - **Color theme**: edit CSS variables in `src/index.css`
 - **Brand name / logo**: edit `index.html`, `public/logo.svg`, and `TECHNOVA` text in `login-screen.tsx` / `sidebar.tsx`
+
+---
+
+## 👨‍💻 Author
+**Kasim Shah**
+
+Connect with me:
+- **Portfolio**: [kasim-portfolio-umber.vercel.app](https://kasim-portfolio-umber.vercel.app/)
+- **LinkedIn**: [Kasim Shah](https://www.linkedin.com/in/kasim-shah-176175340/)
+- **GitHub**: [@kasimshah19](https://github.com/kasimshah19)
